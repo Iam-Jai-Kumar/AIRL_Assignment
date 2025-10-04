@@ -69,5 +69,84 @@ PyTorch Documentation
 
 CIFAR-10 Dataset
 
+
+# Text-Prompted Segmentation with SAM 2 (Contour-Based)
+## Overview
+
+This project implements text-prompted segmentation of a single image using Segment Anything Model (SAM 2).
+Instead of using CLIP or GroundingDINO for text-to-region mapping, a simple heuristic is used based on color and size.
+
+Candidate object regions are generated using contour detection in OpenCV. The region most likely matching the text prompt is then fed into SAM 2 for precise mask prediction.
+
+## Features
+
+Runs fully on Google Colab GPU.
+
+Uses SAM 2 for accurate segmentation masks.
+
+Simple text-to-region mapping without external vision-language models.
+
+Works end-to-end with Drive-hosted checkpoint and image.
+
+Visualizes the final mask overlay on the original image.
+
+## Requirements
+
+Python 3.8+
+
+PyTorch 2.x
+
+OpenCV 4.7+ (with contrib)
+
+segment-anything (SAM 2)
+
+PIL, matplotlib, numpy
+
+## How to Run in Colab
+
+Clone or copy the notebook (q2.ipynb) into Colab.
+
+Mount Google Drive and place:
+
+SAM checkpoint: MyDrive/checkpoints/sam_vit_b_01ec64.pth
+
+Image to segment: MyDrive/resources/sample.jpg
+
+Run all cells in order.
+
+Modify the text prompt.
+
+The notebook outputs the segmentation mask overlay on the image.
+
+## Pipeline
+
+Load image from Google Drive.
+
+Generate candidate regions using OpenCV contours.
+
+Text prompt → region heuristic:
+
+If prompt contains "red", "green", "blue", choose region with dominant color.
+
+Otherwise, fallback to largest region.
+
+Feed selected region to SAM 2 → predict precise mask.
+
+Visualize mask overlay on the original image.
+
+## Limitations
+
+The text-to-region mapping is heuristic-based, so it works best for objects with distinctive colors or largest size.
+
+Cannot handle complex queries like "small white cat under tree" accurately.
+
+Only supports single image segmentation (no multi-object detection yet).
+
+For more accurate text-guided segmentation, integration with vision-language models like CLIP, GroundingDINO, or GLIP is recommended.
+
+## Citation
+
+Dosovitskiy et al., “An Image is Worth 16x16 Words: Transformers for Image Recognition at Scale,” ICLR 2021 (for SAM reference).
+
 Author: Jai Kumar
 Date: 2025-10-04
